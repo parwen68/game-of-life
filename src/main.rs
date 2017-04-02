@@ -7,11 +7,13 @@ use rand::{thread_rng, Rng};
 use std::time::SystemTime;
 use rayon::prelude::*;
 
+// Initialize all cells
 fn init(dim: isize) -> Vec<bool> {
     let mut rng = thread_rng();
     rng.gen_iter::<bool>().take((dim*dim) as usize).collect::<Vec<bool>>()
 }
 
+// Create a Rect for each cell
 fn dot<'a>(x: f32, y: f32) -> Rect<'a> {
     let mut rect = Rect::new();
     rect.width(1f32);
@@ -21,18 +23,22 @@ fn dot<'a>(x: f32, y: f32) -> Rect<'a> {
     rect
 }
 
+// Create all Rects
 fn rects<'a>(dim: isize) -> Vec<Rect<'a>> {
     (0..dim*dim).map(|i| dot((i % dim) as f32, (i / dim) as f32)).collect::<Vec<Rect>>()
 }
 
+// From vector position to coordinate
 fn to_coords(i: isize, dim: isize) -> (isize, isize){
     (i % dim, i / dim)
 }
 
+// From coordinate to vector position
 fn from_coords(coords: (isize, isize), dim: isize) -> isize {
     coords.0 + coords.1 * dim
 }
 
+// Create a vector withh vectors for each cells neighbors
 fn neigh(dim: isize) -> Vec<Vec<(isize)>> {
     let v: Vec<isize> = vec![-1,0,1];
 
@@ -51,6 +57,7 @@ fn neigh(dim: isize) -> Vec<Vec<(isize)>> {
         ).collect::<Vec<_>>()
 }
 
+// Calculate a new generation
 fn next(v: Vec<(bool)>, neigh: &Vec<Vec<(isize)>>) -> Vec<(bool)> {
 
     v.par_iter().zip(neigh.par_iter()).map(|(x, y)| {
@@ -67,6 +74,7 @@ fn next(v: Vec<(bool)>, neigh: &Vec<Vec<(isize)>>) -> Vec<(bool)> {
     }).collect::<Vec<_>>()
 }
 
+// Update window
 fn update(w: &mut Window) -> bool {
     w.to_sfml_window().display();
     w.is_open()
