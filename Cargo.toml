@@ -1,0 +1,9 @@
+[package]
+name = "game-of-life"
+version = "0.1.0"
+authors = ["Par Wenaker <par@wenaker.se>"]
+
+[dependencies]
+rugra = "*"
+rand = "*"
+rayon = "*"
